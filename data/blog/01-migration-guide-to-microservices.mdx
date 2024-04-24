@@ -1,0 +1,48 @@
+---
+title: Time to strangle your Monolith to Microservices
+date: '2019-04-09'
+tags: ['architecture']
+draft: false
+images: ['/static/images/01-migration-guide-to-microservices/strangler_vines.jpeg']
+summary: Migration strategy from monolith to microservices
+---
+
+Much has been said about microservices. The benefits of it over monolith has been touted. For those who need to warm up, here goes the definition as per Wikipedia -
+
+> **Microservices** are a software development technique which structures an application as a collection of loosely coupled services. The benefit of decomposing an application into different smaller services is that it improves modularity. It parallelizes development by enabling small autonomous teams to develop, deploy and scale their respective services independently.
+
+With all those benefits of scalability and what not, there lies a complex infrastructure with multiple instances of the application serving requests. Maintaining such an infrastructure can be a nightmare if you don’t have the proper expertise to handle it.
+
+Imagine a small-sized startup asking you for help on architectural design, would you suggest a difficult to manage _microservice_ in the first instance? Don’t you think the architectural concerns will bog down the startup and eventually _pull all the focus away from the problem that the startup is trying to solve_? With all due respect to microservices, I would suggest building a monolith first that could be broken down to microservices if the startup is lucky enough to garner tons of traffic. **Follow** [**YAGNI**](https://martinfowler.com/bliki/Yagni.html)**! _You are not gonna need a microservice right away._** Build what is sufficient for NOW. Everything evolves, if you are lucky enough, your architecture can evolve iteratively and incrementally as well.
+
+Now halfway into the startup’s success, with mind-boggling traffic, begging for scaling up the monolith serving multiple services, how do you deal with it? Well, you break it. So how do you break it? You rewrite the entire code **again…** **a BIG-BANG rewrite!!** A big NOOOOO…
+
+<iframe src="https://giphy.com/embed/3o7WTNYgMUmNM9jFh6" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/cbs-no-tbbt-bbt-3o7WTNYgMUmNM9jFh6"></a></p>
+
+Say **NO** to a Big-Bang rewrite strategy of migration from monolith to microservices
+
+That’s likely to fail as the entire rewrite can deliver only once it is complete. As Martin Fowler rightly says, “The only thing a Big Bang rewrite guarantees is a **Big Bang**!”. Don’t you agree?
+
+Well, as with all agile practices, you build microservices _incrementally and iteratively_ on top of the monolith. In other words, you strangle the huge monolith and keep extracting services out of it until the monolith is dead, or it becomes just another microservice. This pattern is inspired by the strangler vines which grow in the rainforest. Such vines seed in the upper branches of the fig tree and share common resources(water and minerals) with its host tree. Gradually, these vines grow down until they root in the soil and enjoy their own share of resources from the soil. Over the years, these vines strangle the host tree thus killing it.
+
+The [Strangler pattern](https://www.martinfowler.com/bliki/StranglerApplication.html) was first introduced in 2004 by Martin Fowler as an app modernization technique even before microservices came into existence. It’s amazing how he drew inspiration from a vine tree in a raintree forest that he spotted during his vacation. How many of us could think or imagine such a thing on vacation?
+
+![Strangler vines](/static/images/01-migration-guide-to-microservices/strangler_vines.jpeg "Strangler vines in the rainforest")
+
+### Enter the Strangler — How to apply this pattern
+
+**Step 1: Identify the Bounded Contexts in the application** — The term “Bounded context” belongs to Domain Driven Design. It is the boundary within which a domain model exists. For example, an e-commerce domain can have the bounded contexts as shown below —
+
+![Bounded Context](/static/images/01-migration-guide-to-microservices/bounded_context.jpeg)
+
+**Step 2: Choose the smallest bounded context to refactor** — From all the bounded contexts in your application, choose the smallest one which could be easily(or at least with lesser difficulty) refactored. This could be one of your numerous microservices which will be carved out of the monolith eventually.
+
+**Step 3: Plan out the microservices within the identified context** — Plan a structure for the new service. List down all that the URLs that you want to expose to the outside world. Your microservice might need to interact with tables that are present in the monolith’s database. The table, in turn, might have relationships with other tables that do not fall within the chosen bounded context. Doing both, carving out service logic as well as extracting database tables and other resources from the monolith might be a daunting task initially. If it is that complex, do it incrementally. Initially, just develop a service for the identified context, but let it share the tables with the monolith. When your microservice is stable enough, move your focus towards extracting tables out of the monolith to the microservice’s own database.
+
+**Step 4: Plan a strangler facade** — You might not want all your clients to change the way they have been interacting with your monolith earlier. Also, there are other services that still reside in the monolith. In reality, your microservice as of now co-exists with the monolith. So you can’t just kill it right away. So how do you make sure that requests for your newly built service routes to your wonderful µservice? Well, you create a facade, a facade that can intercept the requests to the backend legacy system and route accordingly to the monolith or the new microservices. Over time, when the entire monolith is migrated to numerous other microservices, the monolith is eventually strangled.
+
+![](/static/images/01-migration-guide-to-microservices/stages.jpeg "Stages of migration from monolith to microservices using Strangler Pattern")
+
+### Putting it all together
+
+Transforming a monolith to microservices is a challenging task and we just saw a pattern which could help in migrating from monolith to microservices. This process takes a considerable amount of time and effort but the strangler pattern makes sure that you receive quicker feedback which in turn reduces risk. Also, the incremental changes and frequent releases made to the strangler allows you to monitor progress more carefully.

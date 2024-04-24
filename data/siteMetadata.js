@@ -1,6 +1,6 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: "Manish's Digital Diary: Navigating the Tech Terrain",
+  title: "Manish's Digital Diary",
   author: 'Manish Tripathy',
   headerTitle: '@MTripathy',
   description: 'Blogging about my learnings',
@@ -10,7 +10,7 @@ const siteMetadata = {
   siteRepo: 'https://github.com/TripathyM/personal-blog',
   siteLogo: '/static/images/logo.png',
   socialBanner: '/static/images/twitter-card.png',
-  mastodon: 'https://mastodon.social/@mastodonuser',
+  mastodon: '',
   email: 'manish.tripathy@outlook.com',
   github: 'https://github.com/TripathyM',
   twitter: '',
@@ -45,7 +45,7 @@ const siteMetadata = {
   newsletter: {
     // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
     // Please add your .env file and modify it according to your selection
-    provider: 'buttondown',
+    provider: '',
   },
   comments: {
     // If you want to use an analytics provider you have to add it to the
