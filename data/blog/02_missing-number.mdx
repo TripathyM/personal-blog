@@ -1,0 +1,184 @@
+---
+title: "Leetcode Missing number"
+date: "2024-04-25"
+tags: ["arrays", "algorithms"]
+draft: false
+summary:
+  "Multiple solutions to the Leetcode question on finding the missing number in
+  an array"
+---
+
+# [Leetcode] Missing Number
+
+Let's explore multiple solutions to the Leetcode problem of finding the missing
+number in an array. We'll discuss the approach, code, as well as the time and
+space complexity for each solution.
+
+## Problem Statement
+
+Given an array `nums` containing `n` distinct numbers in the range `[0, n]`,
+return _the only number in the range that is missing from the array_.
+
+### Example
+
+> Input: nums = [3,0,1]  
+> Output: 2  
+> Explanation: n=3 since there are 3 numbers, so all numbers are in the range
+> [0,3]. 2 is the missing number in the range since it does not appear in nums.
+
+[View Problem on LeetCode](https://leetcode.com/problems/missing-number/)
+
+## Solution 1: Array Index Mapping
+
+> Time complexity: O(n)  
+> Space complexity: O(n)
+
+**Approach**: This approach, often referred to as "Array Index Mapping", finds
+the missing number in an array by leveraging the indices of a temporary array.
+
+Here's a brief explanation:
+
+1. A temporary array of size N+1 is created and pre-filled with -1, indicating
+   all numbers from the original input array are missing.
+
+2. The function then iterates over the input array. For each number n in the
+   input array, it sets the value at index n in the temporary array to 1,
+   indicating that n is present in the input array.
+
+3. Finally, the function finds the first index in the temporary array that still
+   has a value of -1. This index is the missing number, as it was not found in
+   the input array.
+
+**Illustration**:
+![Illustration](/static/images/02_missing-number/array-index-mapping.png "Illustration of array index mapping")
+
+**Code**:
+
+```javascript
+function missingNumber(nums: number[]): number {
+  const tempAr = new Array(nums.length + 1).fill(-1);
+
+  nums.forEach(n => tempAr[n] = 1)
+
+  const missingNumber = tempAr.findIndex(n => n === -1);
+  return missingNumber;
+};
+```
+
+## Solution 2: Sort + Binary Search
+
+> Time complexity: O(n log n)  
+> Space complexity: O(1) if an in-place sorting algorithm (like QuickSort or
+> HeapSort) is used, O(n) if a not in-place sorting algorithm (like Merge Sort
+> or Counting Sort) is used.
+
+**Approach**: This is a distinctive use of binary search, where the exact value
+(search key) isn't known upfront. However, the key aspect to consider is that
+binary search progressively halves the search space while looking for the key,
+eventually narrowing down to a single element, which is the search key.
+
+**Illustration**:
+![Illustration](/static/images/02_missing-number/binary-search.png "Illustration of binary search")
+
+**Code**:
+
+```javascript
+function missingNumber(nums: number[]): number {
+  nums.sort((a,b) => a - b);
+
+  let lo = 0;
+  let hi = nums.length - 1;
+
+  while(lo < hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+
+    if(nums[mid] === mid) {
+      lo = lo + 1;
+    } else {
+      hi = mid;
+    }
+  }
+
+  // In case the lo has reached the last value in the array without finding a mismatch, then return lo + 1
+  return nums[lo] !== lo ? lo : lo + 1;
+};
+```
+
+## Solution 3: Hashset
+
+> Time complexity: O(n)  
+> Space complexity: O(n)
+
+**Approach**: Insert all the elements of the array into a HashSet and then
+search for elements from 1 to N in the set. Since this is a hashset the search
+would be O(1).
+
+**Code**:
+
+```javascript
+function missingNumber(nums: number[]): number {
+  const numsSet = new Set(nums);
+  const N = nums.length + 1;
+  const missingNumber = Array.from({length: N}, (_, i) => i).find(n => !numsSet.has(n));
+
+  return missingNumber ?? -1; // The nullish coalescing operator (??) only checks for null or undefined. If value is 0, it will not be replaced with -1
+  // Same applies for 0, false, NaN, or '' (empty string).
+};
+```
+
+## Solution 4: Bit Manipulation
+
+> Time complexity: O(n)  
+> Space complexity: O(1)
+
+**Approach**:
+
+Using XOR property, a ^ a = 0. Also, a ^ b = c means a ^ c = b and b ^ c = a.
+This is the inverse property of XOR.
+
+`Result = (array_length) ^ (index ^ array[index])`
+
+So, assuming input array is [2, 0]. Result = 2 ^ (0 ^ 2) ^ (1 ^ 0) = (2 ^ 2) ^
+(0 ^ 0) ^ (1) = 1
+
+**Code**
+
+```javascript
+function missingNumber(nums: number[]): number {
+  const missingNumber = nums.reduce(
+    (accumulator, currentValue, index) => accumulator ^ currentValue ^ index,
+    nums.length
+  );
+
+  return missingNumber;
+}
+```
+
+## Solution 5: Gauss summation formula
+
+> Time complexity: O(n)  
+> Space complexity: O(1)
+
+[Gauss' Summation Formula](https://letstalkscience.ca/educational-resources/backgrounders/gauss-summation)
+is a simple method to calculate the sum of consecutive numbers. According to
+this formula, the sum of all numbers from 1 to `n` is `(n * (n + 1)) / 2`.
+
+In the context of finding a missing number in an array, we can use Gauss'
+Summation Formula to find the expected sum of the first `n` natural numbers,
+then subtract the actual sum of the numbers in the array. The result will be the
+missing number.
+
+For example, if we have an array `[0, 1, 3]`, the expected sum for numbers from
+0 to 3 is `(3 * (3 + 1)) / 2 = 6`. The actual sum of the numbers in the array is
+`0 + 1 + 3 = 4`. So, the missing number is `6 - 4 = 2`.
+
+**Code**
+
+```javascript
+function missingNumber(nums: number[]): number {
+  const n = nums.length;
+  const totalSum = (n * (n + 1)) / 2;
+  const actualSum = nums.reduce((a, b) => a + b);
+  return totalSum - actualSum;
+};
+```
