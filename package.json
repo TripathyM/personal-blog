@@ -10,13 +10,15 @@
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts",
     "prepare": "husky",
-    "compose": "node scripts/compose-blog.js"
+    "compose": "node scripts/compose-blog.js",
+    "prettier-fix": "prettier --write ."
   },
   "dependencies": {
     "@headlessui/react": "1.7.19",
     "@next/bundle-analyzer": "14.2.1",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.12",
+    "@vercel/analytics": "^1.2.2",
     "autoprefixer": "^10.4.13",
     "contentlayer2": "0.4.4",
     "esbuild": "0.20.2",
