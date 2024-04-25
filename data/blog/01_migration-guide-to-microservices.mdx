@@ -17,7 +17,17 @@ Imagine a small-sized startup asking you for help on architectural design, would
 
 Now halfway into the startup’s success, with mind-boggling traffic, begging for scaling up the monolith serving multiple services, how do you deal with it? Well, you break it. So how do you break it? You rewrite the entire code **again…** **a BIG-BANG rewrite!!** A big NOOOOO…
 
-<iframe src="https://giphy.com/embed/3o7WTNYgMUmNM9jFh6" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/cbs-no-tbbt-bbt-3o7WTNYgMUmNM9jFh6"></a></p>
+<iframe
+  src="https://giphy.com/embed/3o7WTNYgMUmNM9jFh6"
+  width="480"
+  height="270"
+  frameBorder="0"
+  class="giphy-embed"
+  allowFullScreen
+></iframe>
+<p>
+  <a href="https://giphy.com/gifs/cbs-no-tbbt-bbt-3o7WTNYgMUmNM9jFh6"></a>
+</p>
 
 Say **NO** to a Big-Bang rewrite strategy of migration from monolith to microservices
 
@@ -27,7 +37,7 @@ Well, as with all agile practices, you build microservices _incrementally and it
 
 The [Strangler pattern](https://www.martinfowler.com/bliki/StranglerApplication.html) was first introduced in 2004 by Martin Fowler as an app modernization technique even before microservices came into existence. It’s amazing how he drew inspiration from a vine tree in a raintree forest that he spotted during his vacation. How many of us could think or imagine such a thing on vacation?
 
-![Strangler vines](/static/images/01-migration-guide-to-microservices/strangler_vines.jpeg "Strangler vines in the rainforest")
+![Strangler vines](/static/images/01-migration-guide-to-microservices/strangler_vines.jpeg 'Strangler vines in the rainforest')
 
 ### Enter the Strangler — How to apply this pattern
 
@@ -41,7 +51,7 @@ The [Strangler pattern](https://www.martinfowler.com/bliki/StranglerApplication.
 
 **Step 4: Plan a strangler facade** — You might not want all your clients to change the way they have been interacting with your monolith earlier. Also, there are other services that still reside in the monolith. In reality, your microservice as of now co-exists with the monolith. So you can’t just kill it right away. So how do you make sure that requests for your newly built service routes to your wonderful µservice? Well, you create a facade, a facade that can intercept the requests to the backend legacy system and route accordingly to the monolith or the new microservices. Over time, when the entire monolith is migrated to numerous other microservices, the monolith is eventually strangled.
 
-![](/static/images/01-migration-guide-to-microservices/stages.jpeg "Stages of migration from monolith to microservices using Strangler Pattern")
+![](/static/images/01-migration-guide-to-microservices/stages.jpeg 'Stages of migration from monolith to microservices using Strangler Pattern')
 
 ### Putting it all together
 
