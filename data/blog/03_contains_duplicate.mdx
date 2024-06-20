@@ -1,0 +1,126 @@
+---
+title: 'Leetcode Contains Duplicate'
+date: '2024-06-18T09:00:00Z'
+tags: ['arrays', 'algorithms']
+draft: false
+summary: 'Multiple solutions and variants to the Leetcode question on finding whether duplicate number exists in an array'
+---
+
+# [Leetcode] Contains Duplicate
+
+Contains Duplicate is relatively an easy question. Let's delve into solutions
+and variants of this problem.
+
+## Problem Statement
+
+Given an integer array nums, return true if any value appears at least twice in
+the array, and return false if every element is distinct.
+
+[View Problem on LeetCode](https://leetcode.com/problems/contains-duplicate/description/)
+
+## Solution 1: Check every pair to see if unique number exists in a pair
+
+> Time complexity: $$O(n^2)$$
+
+Total number of pairs = C(n,2)
+
+$$
+C(n,2) = \frac{n!}{2! (n-2)!} \\
+\;\;\;\;\;= \frac{1 \cdot 2 \cdot ... \cdot (n-2) \cdot (n-1) \cdot n} {2 \cdot (1 \cdot 2 \cdot ... \cdot (n-2))} \\
+\;\;\;\;\;= \frac{n \cdot (n-1)}{2}
+
+
+$$
+
+To learn more about permutations and combinations refer [here](https://www.calculatorsoup.com/calculators/discretemathematics/combinations.php)
+
+> Space complexity: O(1)
+
+**Approach**: Two loops to compare all pairs
+
+**Code**:
+
+```python
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        for i in range(len(nums)):
+            for j in range(0, i): # Look back technique. This can also be look ahead technique, i.e. for j in range(i+1, len(nums))
+                if nums[i] == nums[j]:
+                    return True
+
+        return False
+```
+
+## Solution 2: Sort + Linear Search
+
+This solution comes from the observation that in solution 1, we had to linearly
+search for the 2nd element of the pair by iterating through the entire array
+and checking both the elements in the pair. This second loop which runs linearly
+costs us O(N). Is there a way to optimize this search? We can sort the array
+and then we can sweep through the array comparing adjacent elements for equality.
+
+> Time complexity: O(n log n)
+> Space complexity: O(1) if an in-place sorting algorithm (like QuickSort or
+> HeapSort) is used, O(n) if a not in-place sorting algorithm (like Merge Sort
+> or Counting Sort) is used.
+
+**Code**:
+
+```python
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        sortedNums = nums.copy()
+        sortedNums.sort()
+
+        for i in range(1, len(sortedNums)):
+            if sortedNums[i-1] == sortedNums[i]:
+                return True
+
+        return False
+```
+
+## Solution 3: Hashset
+
+> Time complexity: O(n)
+> Space complexity: O(n)
+
+**Approach**: Continuing from the explanation in Solution 2, we need a fast
+way to search. Hashtables can help us search in O(1). So the time complexity
+reduces to O(n \* 1) = O(n).
+Note that we are employing the look back technique here to search in the set. Check code!
+
+**Code**:
+
+```python
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        hashSet = set()
+
+        for n in nums:
+            if n in hashSet:
+                return True
+            hashSet.add(n)
+
+        return False
+
+```
+
+## Solution 4: Using the length of a hashset
+
+> Time complexity: O(n)
+> Space complexity: O(n)
+
+**Code**
+
+```python
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        return len(set(nums)) != len(nums)
+```
+
+However the above code builds the entire set early in the approach as compared to the
+Solution 3 which can exit early if a duplicate is found
+
+## Variants of this question
+[Contains Duplicate II](./04_contains_duplicate_ii)
+

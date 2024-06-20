@@ -1,0 +1,150 @@
+---
+title: 'Leetcode Contains Duplicate II'
+date: '2024-06-18T11:00:00Z'
+tags: ['arrays', 'algorithms']
+draft: false
+summary: 'Multiple solutions the Leetcode question on finding whether duplicate number exists in an array in a window of size k'
+---
+
+# [Leetcode] Contains Duplicate II
+
+## Problem Statement
+
+Given an integer array nums and an integer k, return true if there are two distinct
+indices i and j in the array such that nums[i] == nums[j] and abs(i - j) {'<='} k.
+
+[View Problem on LeetCode](https://leetcode.com/problems/contains-duplicate-ii/description/)
+
+## Solution 1: Check every pair in window of size k to see if unique number exists in a pair.
+
+This is similar to the Solution 1 [here](./03_contains_duplicate)
+
+> Time complexity: $$O(n \cdot min(k, n))$$
+> Note that going by the constrints in the problem statement, k can be greater than n.
+
+> Space complexity: O(1)
+
+**Approach**: Two loops to compare all pairs between indices i and i-k
+
+**Code**:
+
+```python
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        for i in range(len(nums)):
+            for j in range(max(0, i-k), i):
+                if nums[i] == nums[j]:
+                    return True
+
+        return False
+```
+
+## Solution 2:
+
+Clearly in the brute force solution, the 2nd loop is the reason behind the
+quadratic time complexity. We can improve on it by thinking of it as a sliding
+window. We need a data structure which would allow removal of the first element,
+i.e. FIFO. When at index i, we need to remove the first element which goes out
+of the window. A queue data structure should help in removal and addition in constant
+time. However search is still O(N). We can either use a hashMap or a hashSet.
+
+NOTE: Initially I thought a hashSet could not be used since it is possible for an
+element to be removed even when it is in the window. An example is [2,2,1] with k=1,
+so when I am at index i=2 with value=1, I will end up removing 2 at i=0, since it goes
+out of the window. Now my set would have no elements. But, then would this situation
+ever happen? Coz before going to i=2 with value=1, the logic would have found the
+duplicate at i=1. I understood this only after drawing the samples like below
+
+![Illustration](/static/images/04_contains_duplicate_ii/sliding-window.png 'Sliding window')
+
+**Approach**: Use a hashset
+
+> Time complexity: O(n)
+> Space complexity: O(n)
+
+**Code**:
+
+```python
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        hashSet = set()
+        for i in range(len(nums)):
+            if nums[i] in hashSet:
+                return True
+
+            hashSet.add(nums[i]) # This step has to be done before removing. Imagine if this line appears after hashSet.remove, consider the case where k = 0, it would mean the index i is always >= k, so the element will be removed, but it has not been added yet.
+
+            if len(hashSet) > k: # Can also use if i >= k as condition since i - k >= 0
+                hashSet.remove(nums[i-k])
+
+        return False
+```
+
+## Solution 3: HashMap with key as number and value as frequency in the window
+
+**Approach**: If the occurrence of a key is greater than 1, then we found duplicate
+
+> Time complexity: O(n)
+> Space complexity: O(n)
+
+**Code**:
+
+```python
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        from collections import defaultdict
+
+        window = defaultdict(int)  # track elements and their counts in a window
+
+        for i in range(len(nums)):
+            # add current element, remove from window if needed
+            window[nums[i]] += 1
+            if window[nums[i]] > 1:
+                return True
+
+            # remove element from window if it goes out of bounds (i - k >= 0)
+            if i >= k:
+                window[nums[i-k]] -= 1
+
+        return False
+
+```
+
+Note We use defaultdict(int) from the collections module. This automatically initializes missing keys with a default value of 0,
+eliminating the need for the get method with a default value. Without this, we would have to do
+`numToOccurence[nums[i]] = numToOccurence.get(nums[i], 0) + 1`
+
+## Solution 4: HashMap with key as number and value as index
+
+> Time complexity: O(n)
+> Space complexity: O(n)
+
+**Code**
+
+```python
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        map = {}
+
+        for i in range(len(nums)):
+            if nums[i] in map:
+                if i - map[nums[i]] <= k:
+                    return true
+
+            map[nums[i]] = i
+
+        return False
+```
+
+The same code above can also be rewritten in Python like below. Note the usage of enumerate.
+Below i refers to the index and j refers to the value.
+
+```python
+   def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        map = {}
+        for i, j in enumerate(nums):
+            if j in map and i - map[j] <= k:
+                return True
+            map[j] = i
+        return False
+```
